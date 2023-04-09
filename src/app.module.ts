@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ExchangeModule } from './exchange/ExchangeModule';
+import { SeekerModule } from './seeker/SeekerModule';
 
 @Module({
-  imports: [ExchangeModule],
+  imports: [SeekerModule],
 })
 export class AppModule {}

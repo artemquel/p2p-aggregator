@@ -16,11 +16,16 @@ export interface IOffer {
   payments: string[];
 }
 
+export interface IOffersResponse {
+  [EOfferDirection.BUY]: IOffer[];
+  [EOfferDirection.SELL]: IOffer[];
+}
+
 export interface IExchange {
   getOffers(request: IOfferRequest): Promise<IOffer[]>;
 }
 
 export enum EExchange {
-  Binance,
-  ByBit,
+  Binance = 'Binance',
+  ByBit = 'ByBit',
 }
