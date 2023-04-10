@@ -15,7 +15,7 @@ export interface IOfferRequest {
   fiatUnit: string;
   cryptoUnit: string;
   direction: EOfferDirection;
-  paymentTypes?: EPaymentType[];
+  paymentTypes: EPaymentType[];
 }
 
 export interface IOffer {
@@ -37,4 +37,5 @@ export interface IExchange {
 export enum EExchange {
   Binance = 'Binance',
   ByBit = 'ByBit',
+  Okx = 'Okx',
 }

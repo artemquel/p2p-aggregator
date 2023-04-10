@@ -8,22 +8,23 @@ import {
   IOffersResponse,
 } from './types';
 import { Injectable } from '@nestjs/common';
+import { Okx } from './okx/Okx';
 
 @Injectable()
 export class ExchangeService {
   constructor(
     private readonly byBit: ByBit,
     private readonly binance: Binance,
+    private readonly okx: Okx,
   ) {}
 
   public async getOffers(request: Omit<IOfferRequest, 'direction'>) {
+    const exchanges = Object.values(EExchange);
     const offers = await Promise.all(
-      this.exchanges.map((exchange) =>
-        this.getExchangeOffers(request, exchange),
-      ),
+      exchanges.map((exchange) => this.getExchangeOffers(request, exchange)),
     );
 
-    return this.exchanges.reduce(
+    return exchanges.reduce(
       (acc, exchange, key) => ({ ...acc, [exchange]: offers[key] }),
       {} as { [key in EExchange]: IOffersResponse },
     );
@@ -54,12 +55,9 @@ export class ExchangeService {
     const map = {
       [EExchange.ByBit]: this.byBit,
       [EExchange.Binance]: this.binance,
+      [EExchange.Okx]: this.okx,
     };
 
     return map[exchange];
-  }
-
-  private get exchanges(): EExchange[] {
-    return [EExchange.ByBit, EExchange.Binance];
   }
 }
