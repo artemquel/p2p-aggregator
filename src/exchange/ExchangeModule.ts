@@ -6,7 +6,7 @@ import { ExchangeService } from './ExchangeService';
 
 @Module({
   imports: [HttpModule],
-  providers: [Binance, ByBit],
+  providers: [Binance, ByBit, ExchangeService],
   exports: [ExchangeService],
 })
 export class ExchangeModule {}
