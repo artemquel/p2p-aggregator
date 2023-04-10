@@ -70,20 +70,22 @@ export class SeekerService {
   }
 
   private formatOpportunity(
-    buy: IOffer,
-    sell: IOffer,
+    buyOffer: IOffer,
+    sellOffer: IOffer,
     buyExchange: EExchange,
     sellExchange: EExchange,
   ): ISeekerOpportunity {
+    const profit = +(sellOffer.price - buyOffer.price).toFixed(4);
+
     return {
-      purchasePrice: buy.price,
+      purchasePrice: buyOffer.price,
       purchaseExchange: buyExchange,
-      purchaseAmounts: [buy.minAmount, buy.maxAmount],
-      sellPrice: sell.price,
+      purchaseAmounts: [buyOffer.minAmount, buyOffer.maxAmount],
+      sellPrice: sellOffer.price,
       sellExchange: sellExchange,
-      sellAmounts: [sell.minAmount, sell.maxAmount],
-      profit: sell.price - buy.price,
-      profitPercent: (sell.price - buy.price) / buy.price,
+      sellAmounts: [sellOffer.minAmount, sellOffer.maxAmount],
+      profit,
+      profitPercent: +(profit / buyOffer.price).toFixed(4),
     };
   }
 }
