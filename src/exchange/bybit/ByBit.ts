@@ -32,12 +32,16 @@ export class ByBit implements IExchange {
       payment: request.paymentTypes.map(this.mapToLocalPaymentType),
     });
 
-    return offers.map((offer) => ({
-      minAmount: Number(offer.minAmount),
-      maxAmount: Number(offer.maxAmount),
-      price: Number(offer.price),
-      payments: offer.payments.map(this.mapToPublicPaymentType),
-    }));
+    return offers
+      .map((offer) => ({
+        minAmount: Number(offer.minAmount),
+        maxAmount: Number(offer.maxAmount),
+        price: Number(offer.price),
+        payments: offer.payments
+          .map(this.mapToPublicPaymentType)
+          .filter((method) => !!method),
+      }))
+      .filter((offer) => offer.payments.length);
   }
 
   private offerDirectionToTradeType(

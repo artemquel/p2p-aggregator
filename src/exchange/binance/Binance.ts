@@ -33,14 +33,16 @@ export class Binance implements IExchange {
       payTypes: request.paymentTypes.map(this.mapToLocalPaymentType),
     });
 
-    return offers.map((offer) => ({
-      minAmount: Number(offer.adv.minSingleTransAmount),
-      maxAmount: Number(offer.adv.maxSingleTransAmount),
-      price: Number(offer.adv.price),
-      payments: offer.adv.tradeMethods.map((method) =>
-        this.mapToPublicPaymentType(method.tradeMethodName),
-      ),
-    }));
+    return offers
+      .map((offer) => ({
+        minAmount: Number(offer.adv.minSingleTransAmount),
+        maxAmount: Number(offer.adv.maxSingleTransAmount),
+        price: Number(offer.adv.price),
+        payments: offer.adv.tradeMethods
+          .map((method) => this.mapToPublicPaymentType(method.tradeMethodName))
+          .filter((method) => !!method),
+      }))
+      .filter((offer) => offer.payments.length);
   }
 
   private offerDirectionToTradeType(

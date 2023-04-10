@@ -4,20 +4,13 @@ import { ISeekerOpportunity } from './types';
 import {
   EExchange,
   EOfferDirection,
-  EPaymentType,
   IOffer,
   IOfferRequest,
 } from '../exchange/types';
 
 @Injectable()
 export class SeekerService {
-  constructor(private readonly exchangeService: ExchangeService) {
-    this.findOpportunities({
-      fiatUnit: 'RUB',
-      cryptoUnit: 'USDT',
-      paymentTypes: [],
-    }).then(console.log);
-  }
+  constructor(private readonly exchangeService: ExchangeService) {}
 
   public async findOpportunities(
     request: Omit<IOfferRequest, 'direction'>,
