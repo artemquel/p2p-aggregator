@@ -1,3 +1,13 @@
+export enum EBinancePayment {
+  Tinkoff = 'TinkoffNew',
+  Rosbank = 'RosBankNew',
+  Qiwi = 'QIWI',
+  Payeer = 'Payeer',
+  Advcash = 'Advcash',
+  BankofGeorgia = 'BankofGeorgia',
+  TBCbank = 'TBCbank',
+}
+
 export enum EBinanceTradeType {
   BUY = 'BUY',
   SELL = 'SELL',
@@ -10,7 +20,7 @@ export interface IBinanceRawRequest {
   page: number;
   rows: number;
   countries?: string[];
-  payTypes?: string[];
+  payTypes?: EBinancePayment[];
   proMerchantAds?: boolean;
   publisherType?: 'merchant';
   transAmount?: number;

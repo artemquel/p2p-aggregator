@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ExchangeService } from '../exchange/ExchangeService';
-
 import { ISeekerOpportunity } from './types';
 import {
   EExchange,
@@ -12,10 +11,10 @@ import {
 @Injectable()
 export class SeekerService {
   constructor(private readonly exchangeService: ExchangeService) {
-    this.findOpportunities({
-      fiatUnit: 'USD',
-      cryptoUnit: 'USDT',
-    }).then(console.log);
+    // this.findOpportunities({
+    //   fiatUnit: 'USD',
+    //   cryptoUnit: 'USDT',
+    // }).then(console.log);
   }
 
   public async findOpportunities(
