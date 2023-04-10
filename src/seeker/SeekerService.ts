@@ -4,6 +4,7 @@ import { ISeekerOpportunity } from './types';
 import {
   EExchange,
   EOfferDirection,
+  EPaymentType,
   IOffer,
   IOfferRequest,
 } from '../exchange/types';
@@ -11,10 +12,11 @@ import {
 @Injectable()
 export class SeekerService {
   constructor(private readonly exchangeService: ExchangeService) {
-    // this.findOpportunities({
-    //   fiatUnit: 'USD',
-    //   cryptoUnit: 'USDT',
-    // }).then(console.log);
+    this.findOpportunities({
+      fiatUnit: 'RUB',
+      cryptoUnit: 'USDT',
+      paymentTypes: [],
+    }).then(console.log);
   }
 
   public async findOpportunities(
@@ -80,9 +82,11 @@ export class SeekerService {
       purchasePrice: buyOffer.price,
       purchaseExchange: buyExchange,
       purchaseAmounts: [buyOffer.minAmount, buyOffer.maxAmount],
+      purchasePaymentType: buyOffer.payments,
       sellPrice: sellOffer.price,
       sellExchange: sellExchange,
       sellAmounts: [sellOffer.minAmount, sellOffer.maxAmount],
+      sellPaymentType: sellOffer.payments,
       profit,
       profitPercent: +(profit / buyOffer.price).toFixed(4),
     };

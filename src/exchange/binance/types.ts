@@ -4,8 +4,6 @@ export enum EBinancePayment {
   Qiwi = 'QIWI',
   Payeer = 'Payeer',
   Advcash = 'Advcash',
-  BankofGeorgia = 'BankofGeorgia',
-  TBCbank = 'TBCbank',
 }
 
 export enum EBinanceTradeType {
@@ -33,7 +31,7 @@ export interface IBinanceRequest
   > {}
 
 export interface IBinanceTradeMethod {
-  tradeMethodName: string;
+  tradeMethodName: EBinancePayment;
 }
 
 export interface IBinanceAdv {

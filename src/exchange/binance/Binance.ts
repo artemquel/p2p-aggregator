@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
+  EBinancePayment,
   EBinanceTradeType,
   IBinanceOffer,
   IBinanceRawRequest,
@@ -8,7 +9,13 @@ import {
   IBinanceResponse,
 } from './types';
 import { firstValueFrom } from 'rxjs';
-import { EOfferDirection, IExchange, IOffer, IOfferRequest } from '../types';
+import {
+  EOfferDirection,
+  EPaymentType,
+  IExchange,
+  IOffer,
+  IOfferRequest,
+} from '../types';
 
 @Injectable()
 export class Binance implements IExchange {
@@ -23,13 +30,16 @@ export class Binance implements IExchange {
       asset: request.cryptoUnit,
       fiat: request.fiatUnit,
       tradeType: this.offerDirectionToTradeType(request.direction),
+      payTypes: request.paymentTypes.map(this.mapToLocalPaymentType),
     });
 
     return offers.map((offer) => ({
       minAmount: Number(offer.adv.minSingleTransAmount),
       maxAmount: Number(offer.adv.maxSingleTransAmount),
       price: Number(offer.adv.price),
-      payments: offer.adv.tradeMethods.map((method) => method.tradeMethodName),
+      payments: offer.adv.tradeMethods.map((method) =>
+        this.mapToPublicPaymentType(method.tradeMethodName),
+      ),
     }));
   }
 
@@ -69,11 +79,13 @@ export class Binance implements IExchange {
   ): Promise<IBinanceResponse> {
     const request: IBinanceRawRequest = {
       countries: [],
-      payTypes: [],
       publisherType: 'merchant',
       proMerchantAds: false,
       rows: this.rows,
       ...payload,
+      payTypes: payload.payTypes.length
+        ? payload.payTypes
+        : Object.values(EBinancePayment),
     };
 
     const { data } = await firstValueFrom(
@@ -81,5 +93,29 @@ export class Binance implements IExchange {
     );
 
     return data;
+  }
+
+  private mapToLocalPaymentType(paymentType: EPaymentType): EBinancePayment {
+    const map = {
+      [EPaymentType.Rosbank]: EBinancePayment.Rosbank,
+      [EPaymentType.Payeer]: EBinancePayment.Payeer,
+      [EPaymentType.Qiwi]: EBinancePayment.Qiwi,
+      [EPaymentType.Advcash]: EBinancePayment.Advcash,
+      [EPaymentType.Tinkoff]: EBinancePayment.Tinkoff,
+    };
+
+    return map[paymentType];
+  }
+
+  private mapToPublicPaymentType(paymentType: EBinancePayment): EPaymentType {
+    const map = {
+      [EBinancePayment.Rosbank]: EPaymentType.Rosbank,
+      [EBinancePayment.Payeer]: EPaymentType.Payeer,
+      [EBinancePayment.Qiwi]: EPaymentType.Qiwi,
+      [EBinancePayment.Advcash]: EPaymentType.Advcash,
+      [EBinancePayment.Tinkoff]: EPaymentType.Tinkoff,
+    };
+
+    return map[paymentType];
   }
 }

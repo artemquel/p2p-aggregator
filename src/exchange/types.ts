@@ -1,3 +1,11 @@
+export enum EPaymentType {
+  Tinkoff,
+  Rosbank,
+  Qiwi,
+  Payeer,
+  Advcash,
+}
+
 export enum EOfferDirection {
   BUY,
   SELL,
@@ -7,13 +15,14 @@ export interface IOfferRequest {
   fiatUnit: string;
   cryptoUnit: string;
   direction: EOfferDirection;
+  paymentTypes?: EPaymentType[];
 }
 
 export interface IOffer {
   minAmount: number;
   maxAmount: number;
   price: number;
-  payments: string[];
+  payments: EPaymentType[];
 }
 
 export interface IOffersResponse {

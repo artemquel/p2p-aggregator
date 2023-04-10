@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
+  EByBitPayment,
   EByBitTradeType,
   IByBitOffer,
   IByBitRawRequest,
@@ -8,7 +9,13 @@ import {
   IByBitResponse,
 } from './types';
 import { firstValueFrom } from 'rxjs';
-import { EOfferDirection, IExchange, IOffer, IOfferRequest } from '../types';
+import {
+  EOfferDirection,
+  EPaymentType,
+  IExchange,
+  IOffer,
+  IOfferRequest,
+} from '../types';
 
 @Injectable()
 export class ByBit implements IExchange {
@@ -22,13 +29,14 @@ export class ByBit implements IExchange {
       tokenId: request.cryptoUnit,
       currencyId: request.fiatUnit,
       side: this.offerDirectionToTradeType(request.direction),
+      payment: request.paymentTypes.map(this.mapToLocalPaymentType),
     });
 
     return offers.map((offer) => ({
       minAmount: Number(offer.minAmount),
       maxAmount: Number(offer.maxAmount),
       price: Number(offer.price),
-      payments: offer.payments.map((method) => String(method)),
+      payments: offer.payments.map(this.mapToPublicPaymentType),
     }));
   }
 
@@ -67,12 +75,14 @@ export class ByBit implements IExchange {
     payload: Omit<IByBitRawRequest, 'size'>,
   ): Promise<IByBitResponse> {
     const request: IByBitRawRequest = {
-      payment: [],
       size: this.size,
       userId: '',
       authMaker: false,
       canTrade: false,
       ...payload,
+      payment: payload.payment.length
+        ? payload.payment
+        : Object.values(EByBitPayment),
     };
 
     const { data } = await firstValueFrom(
@@ -82,5 +92,29 @@ export class ByBit implements IExchange {
     );
 
     return data;
+  }
+
+  private mapToLocalPaymentType(paymentType: EPaymentType): EByBitPayment {
+    const map = {
+      [EPaymentType.Rosbank]: EByBitPayment.Rosbank,
+      [EPaymentType.Payeer]: EByBitPayment.Payeer,
+      [EPaymentType.Qiwi]: EByBitPayment.QIWI,
+      [EPaymentType.Advcash]: EByBitPayment.Advcash,
+      [EPaymentType.Tinkoff]: EByBitPayment.Tinkoff,
+    };
+
+    return map[paymentType];
+  }
+
+  private mapToPublicPaymentType(paymentType: EByBitPayment): EPaymentType {
+    const map = {
+      [EByBitPayment.Rosbank]: EPaymentType.Rosbank,
+      [EByBitPayment.Payeer]: EPaymentType.Payeer,
+      [EByBitPayment.QIWI]: EPaymentType.Qiwi,
+      [EByBitPayment.Advcash]: EPaymentType.Advcash,
+      [EByBitPayment.Tinkoff]: EPaymentType.Tinkoff,
+    };
+
+    return map[paymentType];
   }
 }
