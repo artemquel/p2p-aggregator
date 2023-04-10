@@ -1,9 +1,9 @@
 export enum EPaymentType {
-  Tinkoff,
-  Rosbank,
-  Qiwi,
-  Payeer,
-  Advcash,
+  Tinkoff = 'Tinkoff',
+  Rosbank = 'Rosbank',
+  Qiwi = 'Qiwi',
+  Payeer = 'Payeer',
+  Advcash = 'AdvCash',
 }
 
 export enum EOfferDirection {
