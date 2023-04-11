@@ -10,13 +10,7 @@ import {
 
 @Injectable()
 export class SeekerService {
-  constructor(private readonly exchangeService: ExchangeService) {
-    this.findOpportunities({
-      fiatUnit: 'RUB',
-      cryptoUnit: 'USDT',
-      paymentTypes: [],
-    }).then(console.log);
-  }
+  constructor(private readonly exchangeService: ExchangeService) {}
 
   public async findOpportunities(
     request: Omit<IOfferRequest, 'direction'>,
@@ -65,7 +59,7 @@ export class SeekerService {
     return (
       buyOffer.price < sellOffer.price &&
       buyOffer.minAmount >= sellOffer.minAmount &&
-      buyOffer.maxAmount <= sellOffer.maxAmount
+      buyOffer.minAmount <= sellOffer.maxAmount
     );
   }
 
