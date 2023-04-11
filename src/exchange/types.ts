@@ -37,5 +37,4 @@ export interface IExchange {
 export enum EExchange {
   Binance = 'Binance',
   ByBit = 'ByBit',
-  Okx = 'Okx',
 }
