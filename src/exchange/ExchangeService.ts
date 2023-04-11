@@ -8,12 +8,14 @@ import {
   IOffersResponse,
 } from './types';
 import { Injectable } from '@nestjs/common';
+import { Pexpay } from './pexpay/Pexpay';
 
 @Injectable()
 export class ExchangeService {
   constructor(
     private readonly byBit: ByBit,
     private readonly binance: Binance,
+    private readonly pexpay: Pexpay,
   ) {}
 
   public async getOffers(request: Omit<IOfferRequest, 'direction'>) {
@@ -53,6 +55,7 @@ export class ExchangeService {
     const map = {
       [EExchange.ByBit]: this.byBit,
       [EExchange.Binance]: this.binance,
+      [EExchange.Pexpay]: this.pexpay,
     };
 
     return map[exchange];
